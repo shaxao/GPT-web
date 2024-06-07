@@ -2,7 +2,7 @@ import { models, baseUrl, getCookie, AUTH_TOKEN, audioKey, audioUrl, getFileExpl
 import { showAlert } from "./iconBtn.js";
 import { globalModeSettings } from "./setup.js";
 import { resetPreview, getImagePreviewSrc, getUploadFile, setImagePreviewSrc, setUploadFile } from "./upload.js";
-import { fetchResults, postResults, fetchGetResults, postAudiceResults, postMessage } from './utils/request.js'
+import { fetchResults, postResults, fetchGetResults, postAudiceResults, postMessage, loadImage } from './utils/request.js'
 export function createMenu(sessionTitle) {
   let menuIcon = document.createElement('span');
   menuIcon.classList.add("menu-icon");
@@ -1506,6 +1506,12 @@ document.addEventListener("DOMContentLoaded", function () {
     type();
   }
 
+  /**
+   * 文本转语音
+   * @param {*} message 
+   * @param {*} selectVoice 
+   * @param {*} vocieButton 
+   */
   async function audioMessage(message, selectVoice, vocieButton) {
     try {
       vocieButton.querySelector('.voice').classList.add('loading');
@@ -1517,8 +1523,8 @@ document.addEventListener("DOMContentLoaded", function () {
       formData.append("message", message);
       formData.append("selectVoice", selectVoice);
       if (isOnlyWeb) {
-        url = `${loadFromLocalStorage(API_URL)}/v1/audio/speech`;
-        auth_token = loadFromLocalStorage(API_KEY);
+        url = `${audioUrl}/v1/audio/speech`;
+        auth_token = audioKey;
         raw = JSON.stringify({
           "model": "tts-1",
           "input": message,
@@ -1530,9 +1536,9 @@ document.addEventListener("DOMContentLoaded", function () {
         auth_token = getCookie(AUTH_TOKEN);
       }
 
-      const audioUrl = await postAudiceResults(url, auth_token, isOnlyWeb ? raw : formData);
+      const audioUrls = await postAudiceResults(url, auth_token, isOnlyWeb ? raw : formData);
       // const audioUrl = URL.createObjectURL(audiceBlob);
-      const audio = new Audio(audioUrl);
+      const audio = new Audio(audioUrls);
       audio.play();
     } catch (error) {
       showAlert('音频获取失败: ' + error, false);
@@ -1548,6 +1554,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function isValidUrl(string) {
+    try {
+      new URL(string);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
   // 图片生成
   async function imageGeaeration(url, formData, chatBoxset) {
@@ -1566,36 +1580,59 @@ document.addEventListener("DOMContentLoaded", function () {
     chatBoxOne.appendChild(receiveMessageContainer);
     const chatContent = document.getElementById('chat-content');
     chatContent.scrollTop = chatBoxOne.scrollHeight;
-    const lastContent = formData.get("message");
+    const formDataMessageJson = formData.get('messageJson');
+    const parsedMessageRe = JSON.parse(formDataMessageJson);
+    const lastContent = parsedMessageRe.content;
     try {
-      const resp = await fetch(url, {
-        method: 'post',
-        headers: {
-          'Authorization': `Bearer ${getCookie(AUTH_TOKEN)}`
-        },
-        body: formData
-      });
-      const imageSrc = await resp.text();
-      const isImageUrl = imageSrc.match(/\.(jpeg|webp|jpg|gif|png|svg)(\?.*)?$/) != null;
-      console.log('是否是图片:' + isImageUrl)
+      let imageSrc;
+      let promot;
+      if (isOnlyWeb) {
+        const data = JSON.stringify({
+          "model": parsedMessageRe.model,
+          "prompt": lastContent,
+          "n": 1,
+          "size": "1024x1024"
+        });
+        const resp = await postMessage({
+          authToken: loadFromLocalStorage(API_KEY),
+          data: data,
+          url: url
+        });
+        const textResponse = await resp.json();
+        console.log(textResponse);
+        imageSrc = textResponse.data[0].url || textResponse.error.message;
+        promot = textResponse.data[0].revised_prompt || "";
+      } else {
+        const resp = await fetch(url, {
+          method: 'post',
+          headers: {
+            'Authorization': `Bearer ${getCookie(AUTH_TOKEN)}`
+          },
+          body: formData
+        });
+        imageSrc = await resp.text();
+      }
 
-      if (isImageUrl) {
-        spinnerElement.remove();
+      // const isImageUrl = imageSrc.match(/\.(jpeg|webp|jpg|gif|png|svg)(\?|$)/) != null;
+      // console.log('是否是图片:' + isImageUrl)
+
+      if (isValidUrl(imageSrc)) {
         const imgElement = document.createElement("img");
-        imgElement.src = imageSrc;
+        const imageUrl = await loadImage(imageSrc);
+        spinnerElement.remove();
+        imgElement.src = imageUrl;
         imgElement.style.maxWidth = "60%";
-        replyElement.innerHTML = '';
+        replyElement.classList.add("message", "received");
+        replyElement.textContent = promot;
         replyElement.dataset.message = lastContent;
-        replyElement.setAttribute("data-text", a);
-        createIcon(replyElement, receiveMessageContainer, chatBoxOne, null);
+        replyElement.setAttribute("data-text", promot);
         // createMyLogo(replyElement, receiveMessageContainer, chatBoxOne);
         replyElement.appendChild(imgElement);
       } else {
         spinnerElement.remove();
         replyElement.classList.add("message", "received");
-        const errorMessage = formData.get("message");
-        console.log("image message", errorMessage);
-        replyElement.dataset.message = errorMessage;
+        // console.log("image message", errorMessage);
+        replyElement.dataset.message = lastContent;
         //replyElement.innerHTML = marked.parse(imageSrc);
         const codeBlock = document.createElement("code");
         const preElement = document.createElement("pre");
@@ -1612,6 +1649,7 @@ document.addEventListener("DOMContentLoaded", function () {
       isSend = false;
       receiveMessageContainer.appendChild(replyElement);
       chatBox.appendChild(receiveMessageContainer);
+      createIcon(replyElement, receiveMessageContainer, chatBoxOne, null);
     } catch (error) {
       sendButton.style.backgroundImage = '';
       sendButton.innerText = '发送';
@@ -1619,8 +1657,7 @@ document.addEventListener("DOMContentLoaded", function () {
       spinnerElement.remove();
       const receiveMessageContainer = document.createElement("div");
       receiveMessageContainer.classList.add("receive-message-container");
-      const errorMessageText = "{'请求异常，请重试!!'}";
-      errorMessage(chatBoxOne, errorMessageText, replyElement, receiveMessageContainer);
+      errorMessage(chatBoxOne, error, replyElement, receiveMessageContainer);
     }
     // createMyLogo(replyElement);
   }
@@ -1634,6 +1671,13 @@ document.addEventListener("DOMContentLoaded", function () {
   //   chatBoxOne.appendChild(parentElement);
   // }
 
+  /**
+   * 创建接收消息容器按钮
+   * @param {*} messageElement 
+   * @param {*} parentElement 
+   * @param {*} chatBoxOne 
+   * @param {*} message 
+   */
   function createIcon(messageElement, parentElement, chatBoxOne, message) {
     const actionsContainer = document.createElement("div");
     actionsContainer.classList.add("message-actions");
@@ -1789,6 +1833,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 
+  /**
+   * 创建发送消息容器按钮
+   * @param {*} params 
+   */
   function createSendMessageIcon(params) {
     const {
       messageElement = null,
@@ -1902,6 +1950,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // chatBoxOne.appendChild(parentElement);
   }
 
+  /**
+   * 翻译按钮处理函数
+   * @param {*} message 
+   * @param {*} language 
+   * @param {*} chatBoxOne 
+   */
   function translateMessage(message, language, chatBoxOne) {
     // console.log(`Translating message: "${message}" to ${language}`);
     const messageId = crypto.randomUUID();
@@ -1920,6 +1974,10 @@ document.addEventListener("DOMContentLoaded", function () {
     postMessageAndHandleResponse(`${baseUrl}/api/tran`, formData, chatBoxOne);
   }
 
+  /**
+   * 复制按钮处理函数
+   * @param {*} messageElement 
+   */
   function copyMessageToClipboard(messageElement) {
     // 获取消息文本
     const messageText = messageElement.getAttribute("data-text") ? null : messageElement.textContent.trim();
@@ -2008,6 +2066,16 @@ document.addEventListener("DOMContentLoaded", function () {
     })(fileContent);
   }
 
+  /**
+   * 发送消息容器编辑按钮
+   * @param {*} userMessageElement 
+   * @param {*} messageContainer 
+   * @param {*} chatBox 
+   * @param {*} messageRe 
+   * @param {*} globalSetJson 
+   * @param {*} oldMessage 
+   * @returns 
+   */
   function createSendIcon(userMessageElement, messageContainer, chatBox, messageRe, globalSetJson, oldMessage) {
     if (userMessageElement.querySelector(".message-actions")) {
       return;
@@ -2201,7 +2269,7 @@ document.addEventListener("DOMContentLoaded", function () {
       formData.append('messageJson', messageJson);
       //console.log("formData", formData.get("file"));
       if (selectmodel === "dall-e-3" || selectmodel === "midjourney" || selectmodel === "stable-diffusion") {
-        imageGeaeration(`${baseUrl}/api/gen`, formData, chatBox);
+        imageGeaeration(isOnlyWeb ? `${loadFromLocalStorage(API_URL)}/v1/images/generations` : `${baseUrl}/api/gen`, formData, chatBox);
       } else {
         postMessageAndHandleResponse(`${baseUrl}/api/base`, formData, chatBox);
       }
@@ -2269,6 +2337,9 @@ document.addEventListener("DOMContentLoaded", function () {
   //   }
   // }
 
+  /**
+   * 声音转文本
+   */
   let mediaRecorder;
   let audioChunks = [];
   audiopbtn.addEventListener('click', async function () {
@@ -2313,10 +2384,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isOnlyWeb) {
       formData.append("file", audioBlob, "audio.wav");
       formData.append("model", "whisper-1");
-      fetch(`${loadFromLocalStorage(API_URL)}/v1/audio/transcriptions`, {
+      fetch(`${audioUrl}/v1/audio/transcriptions`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${loadFromLocalStorage(API_KEY)}`
+          'Authorization': `Bearer ${audioKey}`
         },
         body: formData
       })

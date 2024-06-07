@@ -150,7 +150,7 @@ export async function postMessage({ url, data, authToken, controller }) {
       'Accept': '*/*',
       'Connection': 'keep-alive'
     },
-    signal: controller.signal
+    signal: controller ? controller.signal : undefined
   };
 
   const resp = await fetch(url, requestOptions);
