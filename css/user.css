@@ -1,0 +1,107 @@
+.user-set {
+  cursor: pointer;
+  height: 170px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  background-color: transparent;
+  padding: 10px;
+  border-radius: 15px;
+  transition: background-color 0.3s;
+  margin-top: auto;
+  position: relative;
+}
+
+.user-set:hover {
+  background-color: #e4e0e0;
+}
+
+.login-menu-text {
+  padding: 10px 16px;
+  color: rgb(155, 155, 155);
+  font-size: 13px;
+  font-weight: 550;
+  display: block;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.login-menu {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  z-index: 1000;
+  padding: 5px 16px;
+  width: 200px;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: center;
+}
+
+.login-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.login-menu li {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.login-menu li:hover {
+  background-color: #f6f6f6;
+}
+
+.user-name {
+  margin-left: 10px;
+  font-size: 1em;
+  color: #0b0b0b;
+  letter-spacing: 1px;
+  /* margin-bottom: -20px; */
+}
+
+.user-img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+/* .user-img {
+  --s: 30px;
+  --c1: #c02942;
+  --c2: #ecd078;
+  --b: 2px;
+  --f: 1;
+  --bgOption: content-box no-repeat center/ calc(100% / var(--f)) 100%;
+  --shrink: calc((var(--s) / var(--f) - var(--s)) / 2 - var(--b));
+
+  width: var(--s);
+  height: var(--s);
+  margin-left: 8px;
+  cursor: pointer;
+  transition: 0.5s;
+  outline-offset: var(--shrink);
+  transform: scale(var(--f));
+  border-radius: 0 0 999px 999px;
+  box-shadow: 0 -1 0 var(--b) var(--c1);
+  background: radial-gradient(circle closest-side,
+      var(--c2) calc(99% - var(--b)),
+      var(--c1) calc(100% - var(--b)),
+      var(--c1) 99%,
+      transparent 100%) var(--bgOption);
+  -webkit-mask: linear-gradient(#000 0 0) no-repeat center calc(0px - var(--shrink)) / calc(100% / var(--f) - 2 * var(--b)) 50%, radial-gradient(circle closest-side, #000 99%, transparent) var(--bgOption);
+}
+
+.user-img:hover {
+  --f: 1.35;
+} */

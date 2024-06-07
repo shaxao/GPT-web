@@ -1,0 +1,278 @@
+@media (min-width: 1024px) {
+  .lg\:gap-y-2\.5 {
+    row-gap: 0.625rem;
+  }
+
+  .lg\:gap-x-3 {
+    -webkit-column-gap: 0.75rem;
+    column-gap: 0.75rem;
+  }
+
+  .lg\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  .md\:w-24 {
+    width: 6rem;
+  }
+
+  .md\:h-24 {
+    height: 6rem;
+  }
+
+  .md\:gap-x-2 {
+    -webkit-column-gap: 0.5rem;
+    column-gap: 0.5rem;
+  }
+
+  .md\:text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+
+:root {
+  --white: #fff;
+  --black: #000;
+  --gray-50: #f9f9f9;
+  --gray-100: #ececec;
+  --gray-200: #cdcdcd;
+  --gray-300: #b4b4b4;
+  --gray-400: #9b9b9b;
+  --gray-500: #676767;
+  --gray-600: #424242;
+  --gray-700: #2f2f2f;
+  --gray-800: #212121;
+  --gray-900: #171717;
+  --gray-950: #0d0d0d;
+  --brand-purple: #ab68ff;
+  --text-primary: var(--gray-950);
+  --text-secondary: var(--gray-500);
+  --text-tertiary: var(--gray-400);
+  --text-quaternary: var(--gray-300);
+  --border-light: rgba(0, 0, 0, .1);
+  --border-medium: rgba(0, 0, 0, .15);
+  --border-heavy: rgba(0, 0, 0, .2);
+  --border-xheavy: rgba(0, 0, 0, .25);
+  --main-surface-primary: var(--white);
+  --main-surface-secondary: var(--gray-50);
+  --main-surface-tertiary: var(--gray-100);
+  --sidebar-surface-primary: var(--gray-50);
+  --sidebar-surface-secondary: var(--gray-100);
+  --sidebar-surface-tertiary: var(--gray-200);
+  --link: #2964aa;
+  --link-hover: #749ac8;
+}
+
+
+.btn2 {
+  align-items: center;
+  border-color: transparent;
+  border-radius: 0.5rem;
+  border-width: 1px;
+  display: inline-flex;
+  font-size: .875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  padding: 0.5rem 0.75rem;
+  pointer-events: auto;
+}
+
+.btn-neutral {
+  background-color: #fff;
+  background-color: var(--main-surface-primary);
+  border-color: rgba(0, 0, 0, .15);
+  border-color: var(--border-medium);
+  border-width: 1px;
+  color: #0d0d0d;
+  color: var(--text-primary);
+  font-size: .875rem;
+  line-height: 1.25rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-token-text-tertiary {
+  color: #9b9b9b;
+  color: var(--gray-400);
+  font-feature-settings: normal;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-variation-settings: normal;
+}
+
+.text-sm {
+  font-size: .875rem;
+  line-height: 1.25rem;
+}
+
+.text-xs {
+  font-weight: 500;
+  font-size: .75rem;
+  line-height: 1rem;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mb-10 {
+  margin-bottom: 2.5rem;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-y-1 {
+  row-gap: 0.25rem;
+}
+
+.gap-x-1\.5 {
+  -webkit-column-gap: 0.375rem;
+  column-gap: 0.375rem;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.77rem;
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.77rem;
+}
+
+.grid {
+  display: grid;
+}
+
+.font-medium {
+  font-weight: 800;
+}
+
+.font-light {
+  font-weight: 300;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex {
+  display: flex;
+}
+
+.w-8 {
+  width: 2rem;
+}
+
+.w-16 {
+  width: 4rem;
+}
+
+.h-16 {
+  height: 4rem;
+}
+
+.w-12 {
+  width: 3rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-10 {
+  height: 2.5rem;
+}
+
+.h-12 {
+  height: 3rem;
+}
+
+.relative {
+  position: relative;
+}
+
+.scroll-mt-28 {
+  scroll-margin-top: 7rem;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}
+
+
+.line-clamp-2 {
+  -webkit-line-clamp: 2;
+  margin-top: 8px;
+}
+
+.line-clamp-1,
+.line-clamp-2 {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+}
+
+.h-fit {
+  height: fit-content;
+}
+
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.antialiased {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

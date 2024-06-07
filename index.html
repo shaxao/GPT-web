@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PandoraNext</title>
+  <link rel="stylesheet" href="./css/prism.css" defer>
+  <link rel="stylesheet" href="./css/style.css" defer>
+  <link rel="stylesheet" href="./css/upload.css" defer>
+  <link rel="stylesheet" href="./css/setup.css" defer>
+  <link rel="stylesheet" href="./css/user.css" defer>
+  <link rel="stylesheet" href="./css/gpts.css" defer>
+  <link rel="stylesheet" href="./css/font.css" defer>
+  <link rel="stylesheet" href="./css/opneai.css" defer>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+  <script src="./mini-coi.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+</head>
+
+<body>
+  <script async src="https://cse.google.com/cse.js?cx=75dd67d121c1e4dcc"></script>
+  <!-- 整体 -->
+  <div class="home">
+    <!-- 侧边栏 部分 -->
+    <div id="sidebar" class="sidebar">
+      <div class="logo">
+        <div class="img-container">
+          <img src="./svg/logo.svg" class="logo-img" alt="icon logo SVG"> <!-- Logo 图标 -->
+          <img src="./svg/textBea.svg" class="textBea" alt="icon Animated SVG"> <!-- TextBea 图标 -->
+        </div>
+        <img src="./svg/addChat.svg" class="addChat" id="addChat" alt="icon Add Chat SVG"> <!-- AddChat 图标 -->
+      </div>
+      <div class="sidebar-menu" id="sidebar-menu">
+        <img src="./svg/Grid.svg" class="grid-gpts" alt="icon Grid SVG">
+        <span class="menu-text">探索 GPTs</span>
+      </div>
+      <div id="session-list" class="session-list">
+        <!-- 这里将会动态添加新的会话标题 -->
+        <div id="menu" class="menu" style="display:none;">
+          <ul>
+            <li><img src="./svg/export.svg" class="menu-img" alt="icon li SVG">分享</li>
+            <!-- <li><img src="./svg/debug.svg" class="menu-img" alt="icon li SVG">调试</li> -->
+            <li><img src="./svg/pen.svg" class="menu-img" alt="icon li SVG">重命名</li>
+            <li>
+              <img src="./svg/rubush.svg" class="menu-img" alt="icon li SVG">
+              <span style="color: rgb(245, 66, 66);font-weight: bold;">
+                删除会话</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 用户设置区 -->
+      <!-- <div class="user-shop">
+        <i class="fa-sharp fa-thin fa-grid-round-2 fa-2xs" style="display: none;"></i>
+      </div> -->
+
+
+      <div class="user-set" id="user-set">
+        <div id="unLoginDiv" style="display: block;">
+          <div class="mb-4 mt-2">
+            <p class="mb-1 text-sm font-semibold text-token-text-primary">注册或登录</p>
+            <p class="text-sm text-token-text-secondary">获取更加智能的回复、上传文件和图片，并获享更多功能。</p>
+          </div>
+          <div class="flex flex-col space-y-2">
+            <button id="registerBtn" class="btn relative btn-primary">
+              <div class="flex w-full gap-2 items-center justify-center">注册</div>
+            </button>
+            <button id="loginBtn" class="btn relative btn-secondary">
+              <div class="flex w-full gap-2 items-center justify-center">登录</div>
+            </button>
+          </div>
+        </div>
+        <div id="login-menu" class="login-menu" style="display: none;">
+
+          <span class="login-menu-text">mhuimm62@gmail.com</span>
+          <ul>
+            <li style="height: 1px; background-color: rgb(229, 226, 226); margin: 0; padding: 0;"></li>
+            <li id="logOut"><img src="./svg/logOut.svg" class="menu-img" alt="icon li SVG">退出登录</li>
+          </ul>
+        </div>
+        <div id="avLoginUser" style="display: none;">
+          <img class="user-img" src="" alt="user">
+          <span class="user-name">我，始皇，打钱！！</span>
+        </div>
+
+      </div>
+    </div>
+    <!-- GPTS 容器 -->
+    <div id="new-container" class="new-container" style="display: none;">
+      <!-- 头部 -->
+      <div class="new-container-header top-index">
+        <span>
+          <button class="cursor-header-pointer">
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="red" xmlns="http://www.w3.org/2000/svg"
+              class="icon-sm text-token-text-primary">
+              <path id="vector" fill-rule="evenodd" clip-rule="evenodd"
+                d="M0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10ZM9.98514 2.00291C9.99328 2.00046 9.99822 2.00006 9.99964 2C10.001 2.00006 10.0067 2.00046 10.0149 2.00291C10.0256 2.00615 10.047 2.01416 10.079 2.03356C10.2092 2.11248 10.4258 2.32444 10.675 2.77696C10.9161 3.21453 11.1479 3.8046 11.3486 4.53263C11.6852 5.75315 11.9156 7.29169 11.981 9H8.01901C8.08442 7.29169 8.3148 5.75315 8.65137 4.53263C8.85214 3.8046 9.08392 3.21453 9.32495 2.77696C9.57422 2.32444 9.79081 2.11248 9.92103 2.03356C9.95305 2.01416 9.97437 2.00615 9.98514 2.00291ZM6.01766 9C6.08396 7.13314 6.33431 5.41167 6.72334 4.00094C6.87366 3.45584 7.04762 2.94639 7.24523 2.48694C4.48462 3.49946 2.43722 5.9901 2.06189 9H6.01766ZM2.06189 11H6.01766C6.09487 13.1737 6.42177 15.1555 6.93 16.6802C7.02641 16.9694 7.13134 17.2483 7.24522 17.5131C4.48461 16.5005 2.43722 14.0099 2.06189 11ZM8.01901 11H11.981C11.9045 12.9972 11.6027 14.7574 11.1726 16.0477C10.9206 16.8038 10.6425 17.3436 10.3823 17.6737C10.2545 17.8359 10.1506 17.9225 10.0814 17.9649C10.0485 17.9852 10.0264 17.9935 10.0153 17.9969C10.0049 18.0001 9.99994 18 9.99994 18C9.99994 18 9.99479 18 9.98471 17.9969C9.97356 17.9935 9.95155 17.9852 9.91857 17.9649C9.84943 17.9225 9.74547 17.8359 9.61768 17.6737C9.35747 17.3436 9.0794 16.8038 8.82736 16.0477C8.39726 14.7574 8.09547 12.9972 8.01901 11ZM13.9823 11C13.9051 13.1737 13.5782 15.1555 13.07 16.6802C12.9736 16.9694 12.8687 17.2483 12.7548 17.5131C15.5154 16.5005 17.5628 14.0099 17.9381 11H13.9823ZM17.9381 9C17.5628 5.99009 15.5154 3.49946 12.7548 2.48694C12.9524 2.94639 13.1263 3.45584 13.2767 4.00094C13.6657 5.41167 13.916 7.13314 13.9823 9H17.9381Z"
+                fill="currentColor"></path>
+            </svg>
+          </button>
+        </span>
+        <div class="header-end">
+          <button class="header-button">
+            My GPTs
+          </button>
+          <div class="header-text">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              class="icon-sm -mx-1">
+              <path d="M12 4L12 20M20 12L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+            Create
+          </div>
+        </div>
+        </span>
+      </div>
+      <!-- 主要部分 -->
+      <div class="new-container-main" id="new-container-main">
+        <div class="new-container-main-header">
+          <div class="new-container-main-header-title">
+            GPTs
+          </div>
+          <div class="new-container-main-header-span">
+            发现并创建结合了说明、额外知识和任意技能组合的ChatGPT自定义版本
+          </div>
+        </div>
+
+        <div class="new-container-main-search">
+          <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+            stroke-linejoin="round" class="pointer-none left-3  h-full text-token-text-tertiary left-6" height="14"
+            width="14" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <div class="search-wrapper">
+            <input type="text" class="new-container-main-search-input" placeholder="搜索GPTs" id="search-input">
+            <div id="results-container" class="results-container"></div>
+          </div>
+        </div>
+        <div id="container" class="absolute inset-0" style="display: none;"></div>
+        <div class=" new-container-main-fenlei">
+          <div class="new-container-main-fenlei-build">
+            <div class="new-container-main-fenlei-build-item active" data-target="featured">热门推荐</div>
+            <div class="new-container-main-fenlei-build-item" data-target="by chatgpt">By ChatGPT</div>
+            <div class="new-container-main-fenlei-build-item" data-target="writing">写作</div>
+            <div class="new-container-main-fenlei-build-item" data-target="productivity">生产率</div>
+            <div class="new-container-main-fenlei-build-item" data-target="research & analysis">研究与分析</div>
+            <div class="new-container-main-fenlei-build-item" data-target="programming">编程</div>
+            <div class="new-container-main-fenlei-build-item" data-target="education">教育</div>
+            <div class="new-container-main-fenlei-build-item" data-target="lifestyle">生活方式</div>
+          </div>
+        </div>
+
+        <!-- <div class="new-container-main-area">
+          <div tabindex="0" style="opacity: 1; transform: none;">
+            <div class="text-xl font-medium md:text-2xl" id="featured">精选</div>
+            <div class="text-sm text-token-text-tertiary md:text-base">本周精选</div>
+          </div>
+          <div class="mb-10 mt-4 new-container-main-area-grid">
+            <div
+              class="grid grid-cols-2 gap-x-1.5 gap-y-1 md:gap-x-2 md:gap-y-1.5 lg:grid-cols-2 lg:gap-x-3 lg:gap-y-2.5">
+              <div tabindex="0" style="opacity: 1; transform: none;" class="new-container-main-area-grid-item">
+                <div class="h-16 w-16 flex-shrink-0 md:h-24 md:w-24">
+                  <div class="gizmo-shadow-stroke overflow-hidden rounded-full">
+                    <img
+                      src="https://files.oaifree.com/file-iT68PpZm30RgJZXqoFdmj6Rb?se=2124-01-14T06%3A02%3A21Z&amp;sp=r&amp;sv=2021-08-06&amp;sr=b&amp;rscc=max-age%3D1209600%2C%20immutable&amp;rscd=attachment%3B%20filename%3D2c1f5590-5c3f-447c-8f2f-3e950fad4b7c.png&amp;sig=SPLt8fMi%2Bem6YIpd%2B6A0LigSckMYa6w6eL0Rmf0u6cE%3D"
+                      class="h-full w-full bg-token-main-surface-secondary" alt="GPT" width="80" height="80">
+                  </div>
+                </div>
+                <div class="flex flex-col grid-text">
+                  <div class="font-medium line-clamp-2 md:text-lg">Adobe Express</div>
+                  <span class="text-xs line-clamp-2 md:line-clamp-3" style="margin-top: 8px;">脱颖而出，
+                    尽在 Adobe Express。快速轻松地制作引人注目的社交帖子、图片
+                    、视频、传单等。您使用 Adobe Express GPT 即表示您接受我
+                    们的使用条款 (https://adobe.ly/legal) 和隐私政策
+                    (https://adobe.ly/privacy)</span>
+                  <div class="mt-1 flex justify-start gap-1 text-xs font-light text-token-text-tertiary line-clamp-1">
+                    <div class="mt-1 flex flex-row items-center space-x-1">
+                      <div class="text-token-text-tertiary text-xs">By adobe.com
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="new-container-main-area">
+          <div tabindex="0" style="opacity: 1; transform: none;">
+            <div class="text-xl font-medium md:text-2xl">流行趋势</div>
+            <div class="text-sm text-token-text-tertiary md:text-base">社区最受欢迎的GPT</div>
+          </div>
+
+
+          <div class="mb-10 mt-4 new-container-main-area-grid2">
+            <div
+              class="grid grid-cols-3 gap-x-1.5 gap-y-1 md:gap-x-2 md:gap-y-1.5 lg:grid-cols-2 lg:gap-x-3 lg:gap-y-2.5">
+              <div tabindex="0" style="opacity: 1; transform: none;" class="new-container-main-area-grid-item2">
+                <div class="text-md flex w-8 shrink-0 items-center justify-center font-semibold ">1</div>
+                <div class="h-12 w-12 flex-shrink-0">
+                  <div class="gizmo-shadow-stroke overflow-hidden rounded-full">
+                    <img src="./img/Adobe.jpg" class="h-full w-full bg-token-main-surface-secondary" alt="GPT"
+                      width="80" height="80">
+                  </div>
+                </div>
+                <div class="flex flex-col grid-text">
+                  <div class="font-medium line-clamp-2 md:text-lg">Adobe Express</div>
+                  <span class="text-xs line-clamp-2 md:line-clamp-3" style="margin-right: 20px;">脱颖而出，
+                    尽在 Adobe Express。快速轻松地制作引人注目的社交帖子、图片
+                    、视频、传单等。您使用 Adobe Express GPT 即表示您接受我
+                    们的使用条款 (https://adobe.ly/legal) 和隐私政策
+                    (https://adobe.ly/privacy)</span>
+                  <div class="mt-1 flex justify-start gap-1 text-xs font-light text-token-text-tertiary line-clamp-1">
+                    <div class="mt-1 flex flex-row items-center space-x-1">
+                      <div class="text-token-text-tertiary text-xs">By adobe.com
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button
+                class="btn2 relative btn-neutral mt-2 h-10 w-full focus:ring-0 focus:ring-offset-0 md:mt-3 new-container-main-area-button">
+                <div class="flex w-full gap-2 items-center justify-center">更多</div>
+              </button>
+            </div>
+          </div>
+        </div> -->
+        <!-- 
+        <div class="new-container-main-area">
+          <div tabindex="0" style="opacity: 1; transform: none;">
+            <div class="text-xl font-medium md:text-2xl">ChatGPT</div>
+            <div class="text-sm text-token-text-tertiary md:text-base">ChatGPT团队创建的GPT</div>
+          </div>
+
+          <div class="mb-10 mt-4 new-container-main-area-grid2">
+            <div
+              class="grid grid-cols-3 gap-x-1.5 gap-y-1 md:gap-x-2 md:gap-y-1.5 lg:grid-cols-2 lg:gap-x-3 lg:gap-y-2.5">
+              <div tabindex="0" style="opacity: 1; transform: none;" class="new-container-main-area-grid-item2">
+              </div>
+            </div>
+
+            <button
+              class="btn2 relative btn-neutral mt-2 h-10 w-full focus:ring-0 focus:ring-offset-0 md:mt-3 new-container-main-area-button">
+              <div class="flex w-full gap-2 items-center justify-center">更多</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="new-container-main-area">
+          <div tabindex="0" style="opacity: 1; transform: none;">
+            <div class="text-xl font-medium md:text-2xl" id="DALL·E">DALL·E</div>
+            <div class="text-sm text-token-text-tertiary md:text-base">将你的想象生成为令人惊叹的图像</div>
+          </div>
+
+          <div class="mb-10 mt-4 new-container-main-area-grid2">
+            <div
+              class="grid grid-cols-3 gap-x-1.5 gap-y-1 md:gap-x-2 md:gap-y-1.5 lg:grid-cols-2 lg:gap-x-3 lg:gap-y-2.5">
+              <div tabindex="0" style="opacity: 1; transform: none;" class="new-container-main-area-grid-item2">
+              </div>
+            </div>
+
+            <button
+              class="btn2 relative btn-neutral mt-2 h-10 w-full focus:ring-0 focus:ring-offset-0 md:mt-3 new-container-main-area-button">
+              <div class="flex w-full gap-2 items-center justify-center">更多</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="new-container-main-area">
+          <div tabindex="0" style="opacity: 1; transform: none;">
+            <div class="text-xl font-medium md:text-2xl" id="write">写作</div>
+            <div class="text-sm text-token-text-tertiary md:text-base">使用创作、编辑和风格优化工具增强您的写作能力</div>
+          </div>
+
+          <div class="mb-10 mt-4 new-container-main-area-grid2">
+            <div
+              class="grid grid-cols-3 gap-x-1.5 gap-y-1 md:gap-x-2 md:gap-y-1.5 lg:grid-cols-2 lg:gap-x-3 lg:gap-y-2.5">
+              <div tabindex="0" style="opacity: 1; transform: none;" class="new-container-main-area-grid-item2">
+              </div>
+            </div>
+
+            <button
+              class="btn2 relative btn-neutral mt-2 h-10 w-full focus:ring-0 focus:ring-offset-0 md:mt-3 new-container-main-area-button">
+              <div class="flex w-full gap-2 items-center justify-center">更多</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="new-container-main-area">
+          <div tabindex="0" style="opacity: 1; transform: none;">
+            <div class="text-xl font-medium md:text-2xl" id="product">生产率</div>
+            <div class="text-sm text-token-text-tertiary md:text-base">提高你的生产效率</div>
+          </div>
+
+          <div class="mb-10 mt-4 new-container-main-area-grid2">
+            <div
+              class="grid grid-cols-3 gap-x-1.5 gap-y-1 md:gap-x-2 md:gap-y-1.5 lg:grid-cols-2 lg:gap-x-3 lg:gap-y-2.5">
+              <div tabindex="0" style="opacity: 1; transform: none;" class="new-container-main-area-grid-item2">
+              </div>
+            </div>
+
+            <button
+              class="btn2 relative btn-neutral mt-2 h-10 w-full focus:ring-0 focus:ring-offset-0 md:mt-3 new-container-main-area-button">
+              <div class="flex w-full gap-2 items-center justify-center">更多</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="new-container-main-area">
+          <div tabindex="0" style="opacity: 1; transform: none;">
+            <div class="text-xl font-medium md:text-2xl" id="research">研究与分析</div>
+            <div class="text-sm text-token-text-tertiary md:text-base">查找、评估、解释和可视化信息</div>
+          </div>
+
+          <div class="mb-10 mt-4 new-container-main-area-grid2">
+            <div
+              class="grid grid-cols-3 gap-x-1.5 gap-y-1 md:gap-x-2 md:gap-y-1.5 lg:grid-cols-2 lg:gap-x-3 lg:gap-y-2.5">
+              <div tabindex="0" style="opacity: 1; transform: none;" class="new-container-main-area-grid-item2">
+              </div>
+            </div>
+
+            <button
+              class="btn2 relative btn-neutral mt-2 h-10 w-full focus:ring-0 focus:ring-offset-0 md:mt-3 new-container-main-area-button">
+              <div class="flex w-full gap-2 items-center justify-center">更多</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="new-container-main-area">
+          <div tabindex="0" style="opacity: 1; transform: none;">
+            <div class="text-xl font-medium md:text-2xl" id="code">编程</div>
+            <div class="text-sm text-token-text-tertiary md:text-base">编写代码、调试、测试和学习</div>
+          </div>
+
+          <div class="mb-10 mt-4 new-container-main-area-grid2">
+            <div
+              class="grid grid-cols-3 gap-x-1.5 gap-y-1 md:gap-x-2 md:gap-y-1.5 lg:grid-cols-2 lg:gap-x-3 lg:gap-y-2.5">
+              <div tabindex="0" style="opacity: 1; transform: none;" class="new-container-main-area-grid-item2">
+              </div>
+            </div>
+
+            <button
+              class="btn2 relative btn-neutral mt-2 h-10 w-full focus:ring-0 focus:ring-offset-0 md:mt-3 new-container-main-area-button">
+              <div class="flex w-full gap-2 items-center justify-center">更多</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="new-container-main-area">
+          <div tabindex="0" style="opacity: 1; transform: none;">
+            <div class="text-xl font-medium md:text-2xl" id="education">教育</div>
+            <div class="text-sm text-token-text-tertiary md:text-base">探索新想法，重温现有技能</div>
+          </div>
+
+          <div class="mb-10 mt-4 new-container-main-area-grid2">
+            <div
+              class="grid grid-cols-3 gap-x-1.5 gap-y-1 md:gap-x-2 md:gap-y-1.5 lg:grid-cols-2 lg:gap-x-3 lg:gap-y-2.5">
+              <div tabindex="0" style="opacity: 1; transform: none;" class="new-container-main-area-grid-item2">
+              </div>
+            </div>
+
+            <button
+              class="btn2 relative btn-neutral mt-2 h-10 w-full focus:ring-0 focus:ring-offset-0 md:mt-3 new-container-main-area-button">
+              <div class="flex w-full gap-2 items-center justify-center">更多</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="new-container-main-area">
+          <div tabindex="0" style="opacity: 1; transform: none;">
+            <div class="text-xl font-medium md:text-2xl" id="lifeStyle">生活方式</div>
+            <div class="text-sm text-token-text-tertiary md:text-base">获取有关旅行、锻炼、时尚、美食等的建议</div>
+          </div>
+
+          <div class="mb-10 mt-4 new-container-main-area-grid2">
+            <div
+              class="grid grid-cols-3 gap-x-1.5 gap-y-1 md:gap-x-2 md:gap-y-1.5 lg:grid-cols-2 lg:gap-x-3 lg:gap-y-2.5">
+              <div tabindex="0" style="opacity: 1; transform: none;" class="new-container-main-area-grid-item2">
+              </div>
+            </div>
+
+            <button
+              class="btn2 relative btn-neutral mt-2 h-10 w-full focus:ring-0 focus:ring-offset-0 md:mt-3 new-container-main-area-button">
+              <div class="flex w-full gap-2 items-center justify-center">更多</div>
+            </button>
+          </div>
+        </div> -->
+
+      </div>
+    </div>
+    <!-- 会话容器 -->
+    <div class="chat-container" id="chat-container" style="display: block;">
+      <button id="toggle-sidebar" class="toggle-btn"></button>
+
+      <!-- Header 部分 -->
+      <div class="chat-header">
+        <div class="head-title">
+          <span>新建标题</span>
+        </div>
+        <div class="gcse-search"></div>
+
+        <!-- 图标 -->
+        <div class="icon-container">
+          <!-- <img class="header-icon" id="biggerBtn" src="./svg/bigger.svg" alt="icon description"> -->
+          <img class="header-icon" id="shareBtn" src="./svg/export.svg" alt="icon description">
+          <img class="header-icon debug-icon" src="./svg/debug.svg" alt="icon description">
+        </div>
+      </div>
+
+      <!-- 代码解释器python -->
+      <div class="code-python" id="code-python">
+        <button id="toggle-code" class="toggle-code"></button>
+        <script type="py-editor">
+        </script>
+      </div>
+      <!-- 分隔线 -->
+      <!-- <div class="divider"></div> -->
+
+      <!-- 聊天区域的容器 -->
+      <!-- 聊天区域的容器，这里将动态添加每个会话的聊天框 -->
+      <div class="chat-content" id="chat-content">
+        <div id="chat-areas-container" class="chat-areas-container">
+        </div>
+      </div>
+
+      <!-- 腰部 部分 -->
+      <!-- <div id="chat-box" class="chat-box"></div> -->
+      <!-- 新增的展开模块 -->
+      <!-- 放大图片的容器 -->
+      <div id="img-modal" class="img-modal">
+        <span id="close-modal" class="close-modal">&times;</span>
+        <img class="modal-content" id="img01">
+      </div>
+
+      <div class="input-area">
+        <div class="dropdown">
+          <button id="dropbtn" class="plugin-btn" data-text="gpt-3.5-turbo"> <img src="./svg/robot.svg"
+              alt="robot icon">
+          </button>
+          <div id="dropdown-content" class="dropdown-content">
+            <!-- JS将在这里动态插入模型名称 -->
+          </div>
+          <button id="uploadbtn" class="plugin-btn"> <img src="./svg/upload.svg" alt="upload icon">
+            <span class="tooltip-text">上传</span>
+          </button>
+          <input type="file" id="fileInput" style="display: none;">
+          <!-- <button id="userbtn" class="plugin-btn"> <img src="./svg/user.svg" alt="user icon"></button> -->
+          <button id="setupbtn" class="plugin-btn"> <img src="./svg/setup.svg" alt="setup icon">
+            <span class="tooltip-text">设置</span>
+          </button>
+          <button id="audiopbtn" class="plugin-btn"> <img src="./svg/audio.svg" alt="audio icon">
+            <span class="tooltip-text">语音</span>
+          </button>
+          <button id="searchbtn" class="plugin-btn"> <img src="./svg/internet.svg" alt="search icon">
+            <span class="tooltip-text">联网</span>
+          </button>
+          <div id="pre-container">
+            <img id="preview" alt="Image preview" style="display: none;">
+            <div id="fileIcon"><i class="fa fa-file" aria-hidden="true"></i></div>
+            <div id="fileName"></div>
+            <div id="viewFile" class="view-file-icon"><i class="fas fa-eye"></i></div>
+            <div id="deleteMark"><i class="fas fa-times"></i></div>
+            <!-- 新增进度条容器 -->
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="progressBar"></div>
+            </div>
+          </div>
+          <!-- 模态框结构 -->
+          <div id="fileModal" class="modal">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <p id="fileContent">这里将显示文件内容</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="message-input">
+          <label class="message-label" for="message-input">
+            <textarea class="message-input-text" id="message-input" placeholder="输入消息..."></textarea>
+            <div class="message-input-button">
+              <button class="send-button" id="send-button">发送</button>
+            </div>
+          </label>
+        </div>
+
+
+      </div>
+      <!-- 设置模块 -->
+      <div id="modal-settings" class="modal">
+        <div class="modal-content">
+          <span id="close-settings" class="close">&times;</span>
+          <h2>当前对话设置</h2>
+          <hr>
+          <form id="settings-form">
+            <div class="setting-item">
+              <label class="set-label" for="model-select">模型 (model)</label>
+              <select class="set-select" id="model-select" name="model">
+                <option value="gpt-3.5-turbo">gpt-3.5-turbo(OpenAI)</option>
+                <!-- 其他选项 -->
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <label class="set-label" for="promot-select">预设AI</label>
+              <select class="set-select" id="promot-select" name="promot">
+                <option value="gpt-3.5-turbo">System</option>
+                <!-- 其他选项 -->
+              </select>
+            </div>
+
+            <div class="setting-item">
+              <label class="set-label" for="model-select">API代理地址(必须http(s)://开头)</label>
+              <input class="setup-input" type="text" id="proxyUrl" name="proxyUrl" placeholder="OpenAI api.openai.com">
+            </div>
+
+            <div class="setting-item">
+              <label class="set-label" for="model-select">API KEY</label>
+              <div class="password-wrapper">
+                <label for="apiKey"></label>
+                <input type="password" name="apiKey" id="apiKey" placeholder="OpenAI API KEY" class="password-input">
+                <button type="button" class="toggle-password"><i class="fas fa-eye"></i></button>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <label class="set-label" for="model-select">WEB代理地址(必须http(s)://开头)</label>
+              <input type="text" id="webProxyUrl" name="webProxyUrl" class="setup-input"
+                placeholder="https://chat.oaifree.com/dad04481-fa3f-494e-b90c-b822128073e5">
+            </div>
+
+            <div class="setting-item">
+              <label class="set-label" for="model-select">Access_Token</label>
+              <label for="access_token"></label>
+              <input type="password" class="setup-input" name="access_token" id="access_token"
+                placeholder="access_token">
+            </div>
+
+            <div class="setting-item">
+              <label class="set-label" for="temperature-slider">随机性
+                <span class="info-icon" data-info="(temperature)采样温度,介于0和2之间。高值输出随机，反正输出集中和确定">
+                  <svg t="1717460888096" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" p-id="4057" width="15" height="15">
+                    <path
+                      d="M512 960C264.96 960 64 759.04 64 512S264.96 64 512 64 960 264.96 960 512 759.04 960 512 960z m0-853.333333c-223.573333 0-405.333333 181.76-405.333333 405.333333s181.76 405.333333 405.333333 405.333333 405.333333-181.76 405.333333-405.333333-181.76-405.333333-405.333333-405.333333z"
+                      fill="#2c2c2c" p-id="4058"></path>
+                    <path
+                      d="M430.933333 513.28c-20.48 25.6-33.706667 5.546667-18.773333-14.506667 60.586667-80.64 95.573333-82.773333 134.826667-82.773333 10.24 0 17.493333 1.706667 21.333333 4.693333 3.84 2.986667 5.973333 8.106667 5.973333 14.933334 0 10.24-8.96 44.373333-27.306666 102.4-29.44 100.693333-44.373333 160-44.373334 178.346666 0 8.96 2.986667 13.653333 8.533334 13.653334 11.52 0 47.36-55.893333 90.026666-55.893334 0 0 42.666667 0-4.693333 20.906667-19.626667 8.533333-63.573333 57.173333-81.92 67.84-18.346667 10.666667-33.706667 15.786667-46.08 15.786667-10.24 0-17.92-3.84-22.613333-11.093334-4.693333-7.253333-7.253333-15.36-7.253334-23.893333 0-31.146667 20.906667-116.053333 63.146667-254.293333 2.133333-6.826667 3.413333-12.373333 3.413333-16.213334 0-6.4-3.413333-9.386667-10.24-9.386666-9.813333 0-22.186667-2.986667-64 49.493333z"
+                      fill="#2c2c2c" p-id="4059"></path>
+                    <path
+                      d="M554.666667 298.666667m-42.666667 0a42.666667 42.666667 0 1 0 85.333333 0 42.666667 42.666667 0 1 0-85.333333 0Z"
+                      fill="#2c2c2c" p-id="4060"></path>
+                  </svg>
+                </span>
+              </label>
+              <input type="range" id="temperature-slider" name="temperature" min="0" max="1" step="0.01" value="0.5">
+              <span class="slider-value" id="temperature-value">0.5</span>
+            </div>
+
+
+            <div class="setting-item">
+              <label class="set-label" for="top-p-slider">核采样
+                <span class="info-icon" data-info="(top_p)温度采样的替代方法，称为原子核采样。0.1 表示仅考虑包含前 10% 概率质量的token">
+                  <svg t="1717460888096" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" p-id="4057" width="15" height="15">
+                    <path
+                      d="M512 960C264.96 960 64 759.04 64 512S264.96 64 512 64 960 264.96 960 512 759.04 960 512 960z m0-853.333333c-223.573333 0-405.333333 181.76-405.333333 405.333333s181.76 405.333333 405.333333 405.333333 405.333333-181.76 405.333333-405.333333-181.76-405.333333-405.333333-405.333333z"
+                      fill="#2c2c2c" p-id="4058"></path>
+                    <path
+                      d="M430.933333 513.28c-20.48 25.6-33.706667 5.546667-18.773333-14.506667 60.586667-80.64 95.573333-82.773333 134.826667-82.773333 10.24 0 17.493333 1.706667 21.333333 4.693333 3.84 2.986667 5.973333 8.106667 5.973333 14.933334 0 10.24-8.96 44.373333-27.306666 102.4-29.44 100.693333-44.373333 160-44.373334 178.346666 0 8.96 2.986667 13.653333 8.533334 13.653334 11.52 0 47.36-55.893333 90.026666-55.893334 0 0 42.666667 0-4.693333 20.906667-19.626667 8.533333-63.573333 57.173333-81.92 67.84-18.346667 10.666667-33.706667 15.786667-46.08 15.786667-10.24 0-17.92-3.84-22.613333-11.093334-4.693333-7.253333-7.253333-15.36-7.253334-23.893333 0-31.146667 20.906667-116.053333 63.146667-254.293333 2.133333-6.826667 3.413333-12.373333 3.413333-16.213334 0-6.4-3.413333-9.386667-10.24-9.386666-9.813333 0-22.186667-2.986667-64 49.493333z"
+                      fill="#2c2c2c" p-id="4059"></path>
+                    <path
+                      d="M554.666667 298.666667m-42.666667 0a42.666667 42.666667 0 1 0 85.333333 0 42.666667 42.666667 0 1 0-85.333333 0Z"
+                      fill="#2c2c2c" p-id="4060"></path>
+                  </svg>
+                </span>
+              </label>
+              <input type="range" id="top-p-slider" name="top_p" min="0" max="1" step="0.01" value="1">
+              <span class="slider-value" id="top-p-value">1</span>
+            </div>
+
+
+            <div class="setting-item">
+              <label class="set-label" class="set-label" for="max-tokens">最大回复长度
+                <span class="info-icon" data-info="(max_tokens)最大回复长度，超出的长度会被截断(过长可能导致请求失败)">
+                  <svg t="1717460888096" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" p-id="4057" width="15" height="15">
+                    <path
+                      d="M512 960C264.96 960 64 759.04 64 512S264.96 64 512 64 960 264.96 960 512 759.04 960 512 960z m0-853.333333c-223.573333 0-405.333333 181.76-405.333333 405.333333s181.76 405.333333 405.333333 405.333333 405.333333-181.76 405.333333-405.333333-181.76-405.333333-405.333333-405.333333z"
+                      fill="#2c2c2c" p-id="4058"></path>
+                    <path
+                      d="M430.933333 513.28c-20.48 25.6-33.706667 5.546667-18.773333-14.506667 60.586667-80.64 95.573333-82.773333 134.826667-82.773333 10.24 0 17.493333 1.706667 21.333333 4.693333 3.84 2.986667 5.973333 8.106667 5.973333 14.933334 0 10.24-8.96 44.373333-27.306666 102.4-29.44 100.693333-44.373333 160-44.373334 178.346666 0 8.96 2.986667 13.653333 8.533334 13.653334 11.52 0 47.36-55.893333 90.026666-55.893334 0 0 42.666667 0-4.693333 20.906667-19.626667 8.533333-63.573333 57.173333-81.92 67.84-18.346667 10.666667-33.706667 15.786667-46.08 15.786667-10.24 0-17.92-3.84-22.613333-11.093334-4.693333-7.253333-7.253333-15.36-7.253334-23.893333 0-31.146667 20.906667-116.053333 63.146667-254.293333 2.133333-6.826667 3.413333-12.373333 3.413333-16.213334 0-6.4-3.413333-9.386667-10.24-9.386666-9.813333 0-22.186667-2.986667-64 49.493333z"
+                      fill="#2c2c2c" p-id="4059"></path>
+                    <path
+                      d="M554.666667 298.666667m-42.666667 0a42.666667 42.666667 0 1 0 85.333333 0 42.666667 42.666667 0 1 0-85.333333 0Z"
+                      fill="#2c2c2c" p-id="4060"></path>
+                  </svg>
+                </span>
+              </label>
+              <input type="number" id="max-tokens" name="max_tokens" min="1" max="4000" value="4000">
+            </div>
+
+            <div class="setting-item">
+              <label class="set-label" for="presence-penalty">话题惩罚值
+                <span class="info-icon" data-info="(presence_penalty)对于已设定的promot作用需要。正值会根据新标记是否出现在文本中来惩罚它们">
+                  <svg t="1717460888096" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" p-id="4057" width="15" height="15">
+                    <path
+                      d="M512 960C264.96 960 64 759.04 64 512S264.96 64 512 64 960 264.96 960 512 759.04 960 512 960z m0-853.333333c-223.573333 0-405.333333 181.76-405.333333 405.333333s181.76 405.333333 405.333333 405.333333 405.333333-181.76 405.333333-405.333333-181.76-405.333333-405.333333-405.333333z"
+                      fill="#2c2c2c" p-id="4058"></path>
+                    <path
+                      d="M430.933333 513.28c-20.48 25.6-33.706667 5.546667-18.773333-14.506667 60.586667-80.64 95.573333-82.773333 134.826667-82.773333 10.24 0 17.493333 1.706667 21.333333 4.693333 3.84 2.986667 5.973333 8.106667 5.973333 14.933334 0 10.24-8.96 44.373333-27.306666 102.4-29.44 100.693333-44.373333 160-44.373334 178.346666 0 8.96 2.986667 13.653333 8.533334 13.653334 11.52 0 47.36-55.893333 90.026666-55.893334 0 0 42.666667 0-4.693333 20.906667-19.626667 8.533333-63.573333 57.173333-81.92 67.84-18.346667 10.666667-33.706667 15.786667-46.08 15.786667-10.24 0-17.92-3.84-22.613333-11.093334-4.693333-7.253333-7.253333-15.36-7.253334-23.893333 0-31.146667 20.906667-116.053333 63.146667-254.293333 2.133333-6.826667 3.413333-12.373333 3.413333-16.213334 0-6.4-3.413333-9.386667-10.24-9.386666-9.813333 0-22.186667-2.986667-64 49.493333z"
+                      fill="#2c2c2c" p-id="4059"></path>
+                    <path
+                      d="M554.666667 298.666667m-42.666667 0a42.666667 42.666667 0 1 0 85.333333 0 42.666667 42.666667 0 1 0-85.333333 0Z"
+                      fill="#2c2c2c" p-id="4060"></path>
+                  </svg>
+                </span>
+              </label>
+              <input type="range" id="presence-penalty" name="presence_penalty" min="0" max="2" step="0.01" value="0">
+              <span class="slider-value" id="presence-penalty-value">0</span>
+            </div>
+
+            <div class="setting-item">
+              <label class="set-label" for="presence-penalty">频率惩罚度
+                <span class="info-icon" data-info="(frequency_penalty)正值会根据新标记在文本中的现有频率来惩罚新标记">
+                  <svg t=" 1717460888096" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" p-id="4057" width="15" height="15">
+                    <path
+                      d="M512 960C264.96 960 64 759.04 64 512S264.96 64 512 64 960 264.96 960 512 759.04 960 512 960z m0-853.333333c-223.573333 0-405.333333 181.76-405.333333 405.333333s181.76 405.333333 405.333333 405.333333 405.333333-181.76 405.333333-405.333333-181.76-405.333333-405.333333-405.333333z"
+                      fill="#2c2c2c" p-id="4058"></path>
+                    <path
+                      d="M430.933333 513.28c-20.48 25.6-33.706667 5.546667-18.773333-14.506667 60.586667-80.64 95.573333-82.773333 134.826667-82.773333 10.24 0 17.493333 1.706667 21.333333 4.693333 3.84 2.986667 5.973333 8.106667 5.973333 14.933334 0 10.24-8.96 44.373333-27.306666 102.4-29.44 100.693333-44.373333 160-44.373334 178.346666 0 8.96 2.986667 13.653333 8.533334 13.653334 11.52 0 47.36-55.893333 90.026666-55.893334 0 0 42.666667 0-4.693333 20.906667-19.626667 8.533333-63.573333 57.173333-81.92 67.84-18.346667 10.666667-33.706667 15.786667-46.08 15.786667-10.24 0-17.92-3.84-22.613333-11.093334-4.693333-7.253333-7.253333-15.36-7.253334-23.893333 0-31.146667 20.906667-116.053333 63.146667-254.293333 2.133333-6.826667 3.413333-12.373333 3.413333-16.213334 0-6.4-3.413333-9.386667-10.24-9.386666-9.813333 0-22.186667-2.986667-64 49.493333z"
+                      fill="#2c2c2c" p-id="4059"></path>
+                    <path
+                      d="M554.666667 298.666667m-42.666667 0a42.666667 42.666667 0 1 0 85.333333 0 42.666667 42.666667 0 1 0-85.333333 0Z"
+                      fill="#2c2c2c" p-id="4060"></path>
+                  </svg>
+                </span>
+              </label>
+              <input type="range" id="frequency_penalty" name="frequency_penalty" min="0" max="2" step="0.01" value="0">
+              <span class="slider-value" id="frequency-penalty-value">0</span>
+            </div>
+
+            <div class="buttons-container">
+              <button type="button" class="setupbutton" id="save-settings">保存设置</button>
+              <button type="button" class="setupbutton" id="reset-settings">恢复默认</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute inset-0" id="modalContainer" style="display: none;">
+    <div class="fixed inset-0 bg-black/50 dark:bg-black/80" style="pointer-events: auto;">
+      <div
+        class="grid h-full w-full grid-cols-[10px_1fr_10px] overflow-y-auto grid-rows-[minmax(10px,_1fr)_auto_minmax(10px,_1fr)] md:grid-rows-[minmax(20px,_1fr)_auto_minmax(20px,_1fr)]">
+        <div role="dialog"
+          class="popover relative col-auto col-start-2 row-auto row-start-2 w-full rounded-2xl bg-token-main-surface-primary text-start shadow-xl flex flex-col focus:outline-none max-w-[550px]"
+          tabindex="-1" style="pointer-events: auto; transform: translateX(90%);">
+          <div
+            class="px-4 pb-4 pt-5 sm:p-6 flex items-center justify-between border-b border-black/10 dark:border-white/10">
+            <h2 id="modalTitle" class="text-lg font-semibold leading-6 text-token-text-primary"></h2>
+            <button id="closeModalButton" class="text-token-text-tertiary hover:text-token-text-secondary">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.34315 6.34338L17.6569 17.6571M17.6569 6.34338L6.34315 17.6571" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </div>
+          <div id="modalContent" class="flex-grow overflow-hidden p-4 sm:p-6">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- <div class="absolute inset-0" id="modalContainer" style="display: none;">
+    <div class="fixed inset-0 bg-black/50 dark:bg-black/80" style="pointer-events: auto;">
+      <div
+        class="grid h-full w-full grid-cols-[10px_1fr_10px] overflow-y-auto grid-rows-[minmax(10px,_1fr)_auto_minmax(10px,_1fr)] md:grid-rows-[minmax(20px,_1fr)_auto_minmax(20px,_1fr)]">
+        <div role="dialog" id="radix-:r5e:" aria-describedby="radix-:r5g:" aria-labelledby="radix-:r5f:"
+          class="popover relative start-1/2 col-auto col-start-2 row-auto row-start-2 w-full rounded-2xl bg-token-main-surface-primary text-start shadow-xl ltr:-translate-x-1/2 rtl:translate-x-1/2 flex flex-col focus:outline-none max-w-[550px]"
+          tabindex="-1" style="pointer-events: auto;">
+          <div
+            class="px-4 pb-4 pt-5 sm:p-6 flex items-center justify-between border-b border-black/10 dark:border-white/10">
+            <div class="flex">
+              <div class="flex items-center">
+                <div class="flex grow flex-col gap-1">
+                  <h2 id="radix-:r5f:" class="text-lg font-semibold leading-6 text-token-text-primary">更新指向聊天的公共链接
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <button id="closeModalButton" class="text-token-text-tertiary hover:text-token-text-secondary">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.34315 6.34338L17.6569 17.6571M17.6569 6.34338L6.34315 17.6571" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="flex-grow overflow-y-auto p-4 sm:p-6">
+            <div class="w-full">
+              <p class="mb-6 text-token-text-secondary">
+                <span>您的姓名以及您在共享后添加的任何消息都将予以保密处理。
+                </span>
+              </p>
+            </div>
+            <div
+              class="mb-2 flex items-center justify-between rounded-2xl border border-token-border-medium bg-token-main-surface-primary p-2 text-token-text-secondary last:mb-2 juice:rounded-full">
+              <div class="relative ml-1 flex-grow">
+                <input type="text" id="shareValue" readonly=""
+                  class="w-full rounded-xl border-0 bg-token-main-surface-primary px-2 py-2.5 text-lg text-token-text-tertiary"
+                  value="https://chatgpt.com/share/...">
+                <div
+                  class="pointer-events-none absolute bottom-0 right-0 top-0 w-12 bg-gradient-to-l from-token-main-surface-primary">
+                </div>
+              </div>
+              <button id="copyShareButton"
+                class="btn relative btn-primary ml-4 mr-0 mt-0 rounded-xl px-4 py-3 text-base font-bold" as="button">
+                <div id="copyContent" class="flex w-full gap-2 items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                    class="icon-md">
+                    <path fill="currentColor" fill-rule="evenodd"
+                      d="M18.293 5.707a4.657 4.657 0 0 0-6.586 0l-1 1a1 1 0 0 1-1.414-1.414l1-1a6.657 6.657 0 1 1 9.414 9.414l-1 1a1 1 0 0 1-1.414-1.414l1-1a4.657 4.657 0 0 0 0-6.586m-2.586 2.586a1 1 0 0 1 0 1.414l-6 6a1 1 0 0 1-1.414-1.414l6-6a1 1 0 0 1 1.414 0m-9 1a1 1 0 0 1 0 1.414l-1 1a4.657 4.657 0 0 0 6.586 6.586l1-1a1 1 0 0 1 1.414 1.414l-1 1a6.657 6.657 0 1 1-9.414-9.414l1-1a1 1 0 0 1 1.414 0"
+                      clip-rule="evenodd"></path>
+                  </svg>复制链接
+                </div>
+              </button>
+            </div>
+            <div class="w-full">
+              <p class="mb-3 text-sm text-token-text-tertiary">已共享此聊天的旧版本。您可以通过<a href="#settings/DataControls"
+                  target="_blank" rel="noreferrer" class="underline hover:text-token-text-quaternary">设置</a>管理此前共享的聊天。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute inset-0" id="modalContainer" style="display: none;">
+    <div class="fixed inset-0 bg-black/50 dark:bg-black/80" style="pointer-events: auto;">
+      <div
+        class="grid h-full w-full grid-cols-[10px_1fr_10px] overflow-y-auto grid-rows-[minmax(10px,_1fr)_auto_minmax(10px,_1fr)] md:grid-rows-[minmax(20px,_1fr)_auto_minmax(20px,_1fr)]">
+        <div role="dialog"
+          class="popover relative col-auto col-start-2 row-auto row-start-2 w-full rounded-2xl bg-token-main-surface-primary text-start shadow-xl flex flex-col focus:outline-none max-w-[550px]"
+          tabindex="-1" style="pointer-events: auto; transform: translateX(80%);">
+          <div
+            class="px-4 pb-4 pt-5 sm:p-6 flex items-center justify-between border-b border-black/10 dark:border-white/10">
+            <h2 class="text-lg font-semibold leading-6 text-token-text-primary">注册账号</h2>
+            <button id="closeModalButton" class="text-token-text-tertiary hover:text-token-text-secondary">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.34315 6.34338L17.6569 17.6571M17.6569 6.34338L6.34315 17.6571" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="flex-grow overflow-y-auto p-4 sm:p-6">
+            <form id="registrationForm" action="http://localhost:9090/login" method="POST" class="w-full">
+              <label for="username" class="block mb-2 text-token-text-secondary">用户名 (3-6个字符或数字):</label>
+              <input type="text" id="username" required pattern="[A-Za-z0-9]{3,6}"
+                class="w-full mb-4 rounded-xl border bg-token-main-surface-primary px-2 py-2.5 text-lg text-token-text-tertiary"
+                placeholder="输入用户名">
+
+              <label for="email" class="block mb-2 text-token-text-secondary">邮箱:</label>
+              <input type="email" id="email" required
+                class="w-full mb-4 rounded-xl border bg-token-main-surface-primary px-2 py-2.5 text-lg text-token-text-tertiary"
+                placeholder="输入邮箱">
+
+              <label for="verificationCode" class="block mb-2 text-token-text-secondary">验证码:</label>
+              <div class="flex items-center gap-4 mb-4">
+                <input type="text" id="verificationCode" required
+                  class="flex-grow rounded-xl border bg-token-main-surface-primary px-2 py-2.5 text-lg text-token-text-tertiary"
+                  placeholder="输入验证码">
+                <button type="button" class="btn btn-primary rounded-xl px-4 py-2 text-base font-bold">发送验证码</button>
+              </div>
+
+              <label for="password" class="block mb-2 text-token-text-secondary">密码
+                (8-12数字、大小写字母):</label>
+              <input type="password" id="password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}"
+                class="w-full mb-4 rounded-xl border bg-token-main-surface-primary px-2 py-2.5 text-lg text-token-text-tertiary"
+                placeholder="输入密码">
+
+              <div class="flex justify-center">
+                <button type="submit" class="btn btn-primary rounded-xl px-4 py-3 text-base font-bold w-1/5">注册</button>
+              </div>
+              <p class="mt-3 text-sm text-token-text-tertiary text-center">已有账号? <a href="#"
+                  class="underline hover:text-token-text-quaternary">点击登录</a></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <div id="customAlert" class="custom-alert">
+    <span id="alertMessage"></span>
+    <button id="closeAlert" class="close-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6.34315 6.34338L17.6569 17.6571M17.6569 6.34338L6.34315 17.6571" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+  </div>
+
+  <script type="module" src="./js/upload.js"></script>
+  <script type="module" src="./js/setup.js"></script>
+  <script type="module" src="./js/main.js"></script>
+  <script type="module" src="./js/gpts.js"></script>
+  <script type="module" src="./js/app.js"></script>
+  <script src="./js/prism.js" defer></script>
+  <script type="module" src="./js/iconBtn.js"></script>
+</body>
+
+</html>
