@@ -109,7 +109,7 @@ function openModal(type) {
   container.style.display = 'block';
 }
 
-showLogin();
+// showLogin();
 
 /**
  * 登录模块是否显示
