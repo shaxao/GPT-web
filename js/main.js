@@ -3,6 +3,7 @@ import { showAlert } from "./iconBtn.js";
 import { globalModeSettings } from "./setup.js";
 import { resetPreview, getImagePreviewSrc, getUploadFile, setImagePreviewSrc, setUploadFile } from "./upload.js";
 import { fetchResults, postResults, fetchGetResults, postAudiceResults, postMessage, loadImage } from './utils/request.js'
+import { modelState } from './store.js'
 export function createMenu(sessionTitle) {
   let menuIcon = document.createElement('span');
   menuIcon.classList.add("menu-icon");
@@ -828,8 +829,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const modelDiv = document.createElement("div");
     modelDiv.textContent = model;
     modelDiv.addEventListener("click", function () {
-      document.getElementById("dropbtn").setAttribute("data-text", model);
-      document.getElementById("dropbtn").textContent = model;
+      // document.getElementById("dropbtn").setAttribute("data-text", model);
+      // document.getElementById("dropbtn").textContent = model;
+      modelState.model = model;
       dropdownContent.classList.remove("show");
       var modelSelect = document.getElementById("model-select");
       for (var i = 0; i < modelSelect.options.length; i++) {
@@ -1117,7 +1119,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const data = JSON.stringify({
-          "model": model,
+          "model": parsedMessageRe.gizmo || model,
           "messages": [
             {
               "role": "system",

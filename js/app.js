@@ -1,6 +1,7 @@
 import { createMenu } from './main.js';
 import { fetchResults, loadImage, fetchGetResults } from './utils/request.js';
 import { getOpenaiBaseUrl, getAuthToken, setCurrentActiveChatBox, getCurrentActiveChatBox, setActiveSessionId, getActiveSessionId } from './common.js';
+import { modelState } from './store.js'
 // document.addEventListener('DOMContentLoaded', () => {
 export async function gptsBeginTalk(path) {
   let chatBoxID = "";
@@ -106,7 +107,7 @@ async function fetcGptsContent(chatBox, path) {
     // console.log('data', imgUrl);
     let gptsContent = document.createElement('div');
     gptsContent.classList.add('gpts-content');
-
+    modelState.model = data.gizmo.display.name;
     // const response = await fetch('/api/default-content');
 
     // const data = await response.json();

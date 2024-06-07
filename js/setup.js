@@ -1,5 +1,5 @@
 import { models, GlobalModeSet, setAuthToken, setOpenaiBaseUrl, saveToLocalStorage, loadFromLocalStorage, API_URL, API_KEY } from "./common.js";
-
+import { modelState } from './store.js'
 
 // 全局的模型类
 
@@ -42,7 +42,7 @@ function showSetUp() {
   const loadedSettings = JSON.parse(loadFromLocalStorage('globalSetting'));
   if (loadedSettings) {
     // console.log('loadSetting', loadedSettings);
-    modelSelect.value = "gpt-3.5-turbo";
+    modelState.model = "gpt-3.5-turbo";
     apiKey.value = loadedSettings.apiKey;
     proxyUrl.value = loadedSettings.baseUrl;
     webProxyUrl.value = loadedSettings.webProxyUrl;
@@ -140,7 +140,7 @@ const saveSettings = () => {
 const resetSettings = () => {
   // 重置逻辑
   const resedGlobalSet = new GlobalModeSet();
-  modelSelect.value = "gpt-3.5-turbo";
+  modelState.model = "gpt-3.5-turbo";
   apiKey.value = resedGlobalSet.apiKey;
   proxyUrl.value = resedGlobalSet.baseUrl;
   webProxyUrl.value = resedGlobalSet.webProxyUrl;
