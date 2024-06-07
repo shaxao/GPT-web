@@ -21,3 +21,7 @@
 
 ## 谷歌搜索和python使用打开代理使用
 
+![image](https://github.com/shaxao/GPT-web/assets/95196396/78faf298-1850-4eb0-9483-8b1ed558dc57)
+![image](https://github.com/shaxao/GPT-web/assets/95196396/b3c053a2-bd2e-440f-9563-7785c4efd803)
+![image](https://github.com/shaxao/GPT-web/assets/95196396/4ce5659f-829c-4ae9-b2e8-4c231684f04e)
+![image](https://github.com/shaxao/GPT-web/assets/95196396/150782b7-3474-4d2b-aa8a-e9f0b0fb1b07)
