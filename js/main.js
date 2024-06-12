@@ -1,4 +1,4 @@
-import { models, baseUrl, getCookie, AUTH_TOKEN, audioKey, audioUrl, getFileExplare, getOpenaiBaseUrl, getAuthToken, Message, setActiveSessionId, getActiveSessionId, setCurrentActiveChatBox, getCurrentActiveChatBox, loadFromLocalStorage, API_URL, API_KEY } from "./common.js";
+import { models, baseUrl, getCookie, AUTH_TOKEN, audioKey, audioUrl, getFileExplare, scrollChat, getOpenaiBaseUrl, getAuthToken, Message, setActiveSessionId, getActiveSessionId, setCurrentActiveChatBox, getCurrentActiveChatBox, loadFromLocalStorage, API_URL, API_KEY } from "./common.js";
 import { showAlert } from "./iconBtn.js";
 import { globalModeSettings } from "./setup.js";
 import { resetPreview, getImagePreviewSrc, getUploadFile, setImagePreviewSrc, setUploadFile } from "./upload.js";
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const audiopbtn = document.getElementById("audiopbtn");
 
-  // 是否需要后端服务
+  // 是否仅仅前端
   let isOnlyWeb = true;
 
   let chatBoxID = "";
@@ -653,45 +653,6 @@ document.addEventListener("DOMContentLoaded", function () {
     codePython.classList.remove('open');
   });
 
-  /**
-   * 滚轮监控
-   */
-
-  // 创建按钮元素
-  function scrollChat() {
-    let scrollButton = document.createElement('button');
-    scrollButton.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
-        class="icon-md m-1 text-token-text-primary">
-        <path fill="currentColor" fill-rule="evenodd"
-        d="M12 21a1 1 0 0 1-.707-.293l-7-7a1 1 0 1 1 1.414-1.414L11 17.586V4a1 1 0 1 1 2 0v13.586l5.293-5.293a1 1 0 0 1 1.414 1.414l-7 7A1 1 0 0 1 12 21"
-        clip-rule="evenodd"></path>
-    </svg>`;
-    scrollButton.classList.add('cursor-pointer', 'absolute', 'z-10', 'rounded-full', 'bg-clip-padding', 'border', 'text-token-text-secondary', 'border-token-border-light', 'right-1/2', 'juice:translate-x-1/2', 'bg-token-main-surface-primary', 'bottom-5');
-    scrollButton.style.display = 'none';
-    const inputArea = document.querySelector('.input-area');
-    const rect = inputArea.getBoundingClientRect();
-    scrollButton.style.bottom = `${window.innerHeight - rect.top + 20}px`;;
-    // 添加按钮到容器
-    const chatBox = getCurrentActiveChatBox();
-    const chatContent = document.getElementById('chat-content');
-    chatBox.appendChild(scrollButton);
-
-    // 按钮点击事件：滚动到chat-content的底部
-    scrollButton.addEventListener('click', function () {
-      chatContent.scrollTop = chatBox.scrollHeight;
-    });
-
-    // 检测滚动条位置，以判断是否显示按钮
-    chatContent.addEventListener('scroll', function () {
-      // console.log('scrool', chatContent.scrollHeight);
-      // console.log('chatContent', chatContent.scrollTop);
-      // console.log('chatBox', chatContent.clientHeight);
-      const isAtBottom = chatContent.scrollHeight - (chatContent.scrollTop + chatContent.clientHeight) < 1;
-      scrollButton.style.display = isAtBottom ? 'none' : 'block';
-    });
-  }
-
   scrollChat();
 
 
@@ -878,7 +839,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //console.log("TEXT_NODE:", node.nodeValue);
         return node;
       } else if (node.nodeType === Node.ELEMENT_NODE) {
-        console.log("ELEMENT_NODE:", node.nodeType);
+        // console.log("ELEMENT_NODE:", node.nodeType);
         const last = getLastTextNode(node);
         if (last) {
           return last;
@@ -1250,6 +1211,8 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log('c:', c);
             replyElement.dataset.message = lastContent;
             replyElement.setAttribute("data-text", a);
+            const sessionMessage = chatBox.getAttribute('data-text') || '';
+            chatBox.setAttribute('data-text', sessionMessage + a);
             createIcon(replyElement, receiveMessageContainer, chatBoxOne, a);
             // createMyLogo(replyElement, receiveMessageContainer, chatBoxOne);
             chatContent.scrollTop = chatBoxOne.scrollHeight;
@@ -1429,7 +1392,7 @@ document.addEventListener("DOMContentLoaded", function () {
               codeBlock.className = `language-${codeType}`;
               codeBlock.classList.add("match-braces");
             } else if (codeCount === 2) {
-              console.log('message:', message);
+              // console.log('message:', message);
               codeBlock.textContent += message;
               preElement.appendChild(codeBlock);
               codeElement.appendChild(preElement);
@@ -1442,11 +1405,8 @@ document.addEventListener("DOMContentLoaded", function () {
               receiveMessageContainer.appendChild(replyElement);
               chatBoxOne.appendChild(receiveMessageContainer);
             }
-
-            if (isCodeBlock) {
-              c += message;
-            } else {
-              a += message;
+            a += message;
+            if (!isCodeBlock) {
               // 代码块结束后，又是一个新的文本容器
               if (codeCount === 3) {
                 b = '';
@@ -1481,7 +1441,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
     } catch (error) {
-      console.log('请求发送失败', error);
+      // console.log('请求发送失败', error);
       cursor.style.display = 'none';
       sendButton.style.backgroundImage = '';
       sendButton.innerText = '发送';
@@ -1739,7 +1699,7 @@ document.addEventListener("DOMContentLoaded", function () {
     </span>
 `;
     copyButton.onclick = function () {
-      copyMessageToClipboard(messageElement);
+      copyMessageToClipboard(message);
       copyButton.innerHTML = `
         <span class="flex h-[30px] w-[30px] items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" class="icon-md-heavy"><path fill="currentColor" fill-rule="evenodd" d="M18.063 5.674a1 1 0 0 1 .263 1.39l-7.5 11a1 1 0 0 1-1.533.143l-4.5-4.5a1 1 0 1 1 1.414-1.414l3.647 3.647 6.82-10.003a1 1 0 0 1 1.39-.263" clip-rule="evenodd"></path></svg>
@@ -1862,7 +1822,7 @@ document.addEventListener("DOMContentLoaded", function () {
     </span>
     `;
     copyButton.onclick = function () {
-      copyMessageToClipboard(messageElement);
+      copyMessageToClipboard(message);
       copyButton.innerHTML = `
       <span class="flex h-[30px] w-[30px] items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" class="icon-md-heavy"><path fill="currentColor" fill-rule="evenodd" d="M18.063 5.674a1 1 0 0 1 .263 1.39l-7.5 11a1 1 0 0 1-1.533.143l-4.5-4.5a1 1 0 1 1 1.414-1.414l3.647 3.647 6.82-10.003a1 1 0 0 1 1.39-.263" clip-rule="evenodd"></path></svg>
@@ -1980,9 +1940,9 @@ document.addEventListener("DOMContentLoaded", function () {
    * 复制按钮处理函数
    * @param {*} messageElement 
    */
-  function copyMessageToClipboard(messageElement) {
+  function copyMessageToClipboard(message) {
     // 获取消息文本
-    const messageText = messageElement.getAttribute("data-text") ? null : messageElement.textContent.trim();
+    const messageText = message ? message.trim() : null;
     // 复制到剪贴板
     // console.log('messageText', messageText);
     navigator.clipboard.writeText(messageText).then(function () {
@@ -2263,6 +2223,14 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         messageRe.content = explare + "\n" + sendMessage;
       }
+      const sessionMessage = chatBox.getAttribute('data-text') || '';
+      if (sessionMessage.length + messageRe.content.length <= globalModeSettings.maxTokens) {
+        chatBox.setAttribute('data-text', sessionMessage + messageRe.content);
+        messageRe.content = sessionMessage + messageRe.content
+      } else {
+        chatBox.setAttribute('data-text', '');
+      }
+
       // formData.append('model', selectmodel);
       const globalSetJson = JSON.stringify(globalModeSettings);
       const messageJson = JSON.stringify(messageRe);

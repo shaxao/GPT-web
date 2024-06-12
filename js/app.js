@@ -1,6 +1,6 @@
 import { createMenu } from './main.js';
 import { fetchResults, loadImage, fetchGetResults } from './utils/request.js';
-import { getOpenaiBaseUrl, getAuthToken, setCurrentActiveChatBox, getCurrentActiveChatBox, setActiveSessionId, getActiveSessionId } from './common.js';
+import { getOpenaiBaseUrl, getAuthToken, setCurrentActiveChatBox, getCurrentActiveChatBox, setActiveSessionId, getActiveSessionId, scrollChat } from './common.js';
 import { modelState } from './store.js'
 // document.addEventListener('DOMContentLoaded', () => {
 export async function gptsBeginTalk(path) {
@@ -84,6 +84,7 @@ export async function gptsBeginTalk(path) {
     // console.log('activeChatBox', activeChatBox)
     // currentActiveChatBox = activeChatBox;
     setCurrentActiveChatBox(activeChatBox);
+    scrollChat();
   });
 
   sessionTitle.click();
